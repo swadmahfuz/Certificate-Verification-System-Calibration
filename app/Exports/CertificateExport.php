@@ -47,7 +47,7 @@ class CertificateExport implements FromCollection, WithHeadings
             'Report Issue Date',
             'Validity Date',
             'Calibration Remarks',
-            'Inspection Internal Notes',
+            'Calibration Internal Notes',
             'Status',
             'Created by',
             'Created by ID',

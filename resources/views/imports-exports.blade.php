@@ -94,7 +94,7 @@
                 <h6 class="text-end" style="font-style: italic; font-weight: bold; color: red;">Do not change template formatting.</h6>
                 <h6 class="text-end" style="font-style: italic; font-weight: bold; color: red;">All dates in Excel must be in YYYY-MM-DD format.</h6>
                 <h6 class="text-end" style="font-style: italic; font-weight: bold; color: red;">Example: "20 May 2024" → "2024-05-20"</h6>
-                <center><button class="btn btn.success mt-3">Import Data</button></center>
+                <center><button class="btn btn-success" style="margin-top: 10px">Import Data</button></center>
                 <br>
             </form>
         </div>

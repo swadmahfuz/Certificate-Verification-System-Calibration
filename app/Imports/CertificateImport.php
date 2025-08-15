@@ -46,7 +46,7 @@ class CertificateImport implements ToModel, WithHeadingRow
             'report_issue_date'         => $row['report_issue_date'] ?? null,
             'validity_date'             => $row['validity_date'] ?? null,
             'calibration_remarks'       => $row['calibration_remarks'] ?? null,
-            'inspection_internal_notes' => $row['inspection_internal_notes'] ?? null,
+            'calibration_internal_notes' => $row['calibration_internal_notes'] ?? null,
             'status'        => 'Pending Review',
             'created_by'    => $createdUser ? $createdUser->name : null,
             'created_by_id' => $createdUser ? $createdUser->id   : null,
