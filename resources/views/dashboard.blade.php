@@ -45,7 +45,7 @@
         <div class="card">
             <div class="card-header">
                 <h6 class="text-end">Logged in User: <b>{{ auth()->user()->name }} ({{ auth()->user()->designation }})</b></h6>
-                <center><h3 class="mb-3">TÜV Austria BIC - Inspection Certificate Verification System (CVS)</h3></center>
+                <center><h3 class="mb-3">TÜV Austria BIC - Calibration Certificate Verification System (CVS)</h3></center>
                 <table class="mb-2" style="width: 90%; margin: auto;">
                     <tr>
                         <td><a href="add-certificate" class="btn btn-success"><i class="fa-solid fa-plus me-1"></i> Add New Certificate</a></td>
@@ -68,15 +68,15 @@
                 @endif
                 <table class="table table-striped search-result">
                     <thead>
-                        <tr><th colspan="12" class="text-center fs-5">All Certificates</th></tr>
+                        <tr><th colspan="11" class="text-center fs-5">All Certificates</th></tr>
                         <tr>
                             <th>Sl.</th>
                             <th>Certificate No</th>
-                            <th>Inspector</th>
+                            <th>Calibration Engg</th>
                             <th>Client</th>
-                            <th>Inspection Type</th>
                             <th>Equipment</th>
-                            <th>Inspection Date</th>
+                            <th>Calibration Date</th>
+                            <th>Report Issue Date</th>
                             <th>Validity</th>
                             <th>Status</th>
                             <th>QR</th>
@@ -97,11 +97,11 @@
                             <tr>
                                 <td>{{ $loop->iteration + $offset }}.</td>
                                 <td>{{ $certificate->certificate_number }}</td>
-                                <td>{{ $certificate->inspector }}</td>
+                                <td>{{ $certificate->calibrator }}</td>
                                 <td>{{ $certificate->client_name }}</td>
-                                <td>{{ $certificate->inspection_type }}</td>
                                 <td>{{ $certificate->equipment_name }}</td>
-                                <td>{{ \Carbon\Carbon::parse($certificate->inspection_date)->format('d-m-Y') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($certificate->calibration_date)->format('d-m-Y') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($certificate->report_issue_date)->format('d-m-Y') }}</td>
                                 <td>
                                     @if ($certificate->validity_date)
                                         {{ \Carbon\Carbon::parse($certificate->validity_date)->format('d-m-Y') }}
@@ -154,13 +154,13 @@
                         _html += `<tr>
                             <td>${index + 1 + (res.data.current_page - 1) * res.data.per_page}.</td>
                             <td>${cert.certificate_number}</td>
-                            <td>${cert.inspector}</td>
-                            <td>${cert.client_name}</td>
-                            <td>${cert.inspection_type}</td>
-                            <td>${cert.equipment_name}</td>
-                            <td>${formatDate(cert.inspection_date)}</td>
+                            <td>${cert.calibrator ?? ''}</td>
+                            <td>${cert.client_name ?? ''}</td>
+                            <td>${cert.equipment_name ?? ''}</td>
+                            <td>${formatDate(cert.calibration_date)}</td>
+                            <td>${formatDate(cert.report_issue_date)}</td>
                             <td>${formatDate(cert.validity_date)}</td>
-                            <td>${cert.status}</td>
+                            <td>${cert.status ?? ''}</td>
                             <td><img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${verifyUrl}"/></td>
                             <td>
                                 <a href="view-certificate/${cert.id}" target="_blank"><i class="fa-solid fa-circle-info"></i></a>
@@ -184,6 +184,7 @@
         function formatDate(date) {
             if (!date) return 'N/A';
             let d = new Date(date);
+            if (isNaN(d)) return date; // in case stored as string not ISO
             return ('0' + d.getDate()).slice(-2) + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + d.getFullYear();
         }
 

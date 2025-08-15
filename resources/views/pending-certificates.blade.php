@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="robots" content="noindex">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>TÜV Austria BIC CVS | Pending Inspection Certificates</title>
+    <title>TÜV Austria BIC CVS | Pending Calibration Certificates</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -12,9 +12,7 @@
     <style>
         .container { max-width: 99%; }
         .table-container { overflow-x: auto; }
-        .table-striped tbody td, .table-striped thead th {
-            vertical-align: middle;
-        }
+        .table-striped tbody td, .table-striped thead th { vertical-align: middle; }
         .table-striped thead th {
             text-align: left;
             position: sticky;
@@ -34,10 +32,7 @@
             transition: all 0.3s ease;
         }
         .btn i { font-size: 16px; }
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0px 4px 6px rgba(0,0,0,0.1); }
         .table-striped { font-size: 11px; }
     </style>
 </head>
@@ -49,7 +44,7 @@
                 <div class="card">
                     <div class="card-header">
                         <h6 class="text-end">Logged in User: <b>{{ auth()->user()->name }} ({{ auth()->user()->designation }})</b></h6>
-                        <h3 class="text-center mb-3">TÜV Austria BIC - Inspection Certificate Verification System (CVS)</h3>
+                        <h3 class="text-center mb-3">TÜV Austria BIC - Calibration Certificate Verification System (CVS)</h3>
                         <table class="mx-auto mb-3" style="width: 80%;">
                             <tr>
                                 <td><a href="add-certificate" class="btn btn-success"><i class="fa-solid fa-plus me-1"></i> Add New Certificate</a></td>
@@ -80,12 +75,12 @@
                                 <tr>
                                     <th>Sl.</th>
                                     <th>Certificate ID</th>
-                                    <th>Inspector</th>
+                                    <th>Calibration Engg</th>
                                     <th>Client</th>
-                                    <th>Inspection Type</th>
                                     <th>Location</th>
                                     <th>Equipment</th>
-                                    <th>Inspection Date</th>
+                                    <th>Calibration Date</th>
+                                    <th>Report Issue Date</th>
                                     <th>Validity</th>
                                     <th>Status</th>
                                     <th>QR Code</th>
@@ -117,22 +112,22 @@
                         let url = "{{ url('') }}" + "?search=" + d.certificate_number;
                         html += '<tr>' +
                                 '<td>' + (i + 1 + (res.data.current_page - 1) * res.data.per_page) + '.</td>' +
-                                '<td>' + d.certificate_number + '</td>' +
-                                '<td>' + d.inspector + '</td>' +
-                                '<td>' + d.client_name + '</td>' +
-                                '<td>' + d.inspection_type + '</td>' +
-                                '<td>' + d.inspection_location + '</td>' +
-                                '<td>' + d.equipment_name + '</td>' +
-                                '<td>' + formatDate(d.inspection_date) + '</td>' +
+                                '<td>' + (d.certificate_number ?? '') + '</td>' +
+                                '<td>' + (d.calibrator ?? '') + '</td>' +
+                                '<td>' + (d.client_name ?? '') + '</td>' +
+                                '<td>' + (d.location ?? '') + '</td>' +
+                                '<td>' + (d.equipment_name ?? '') + '</td>' +
+                                '<td>' + formatDate(d.calibration_date) + '</td>' +
+                                '<td>' + formatDate(d.report_issue_date) + '</td>' +
                                 '<td>' + (d.validity_date ? formatDate(d.validity_date) : 'N/A') + '</td>' +
-                                '<td>' + d.status + '</td>' +
+                                '<td>' + (d.status ?? '') + '</td>' +
                                 '<td><img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=' + encodeURIComponent(url) + '"/></td>' +
                                 '<td>' +
-                                    '<a href="view-certificate/' + d.id + '" target="_blank"><i class="fa-solid fa-circle-info"></i></a> ' +
-                                    '<a href="edit-certificate/' + d.id + '" target="_blank"><i class="fa-solid fa-pen-to-square"></i></a> ' +
-                                    '<a href="delete-certificate/' + d.id + '"><i class="fa-solid fa-trash"></i></a> ' +
-                                    (d.status === 'Pending Review' ? '<a href="review-certificate/' + d.id + '"><i class="fa-solid fa-thumbs-up"></i></a> ' : '') +
-                                    (d.status === 'Pending Approval' ? '<a href="approve-certificate/' + d.id + '"><i class="fa-solid fa-check"></i></a>' : '') +
+                                    '<a href="view-certificate/' + d.id + '" target="_blank"><i class="fa-solid fa-circle-info" title="View"></i></a> ' +
+                                    '<a href="edit-certificate/' + d.id + '" target="_blank"><i class="fa-solid fa-pen-to-square" title="Edit"></i></a> ' +
+                                    '<a href="delete-certificate/' + d.id + '"><i class="fa-solid fa-trash" title="Delete"></i></a> ' +
+                                    (d.status === 'Pending Review' ? '<a href="review-certificate/' + d.id + '"><i class="fa-solid fa-thumbs-up" title="Mark as Reviewed"></i></a> ' : '') +
+                                    (d.status === 'Pending Approval' ? '<a href="approve-certificate/' + d.id + '"><i class="fa-solid fa-check" title="Mark as Approved"></i></a>' : '') +
                                 '</td>' +
                             '</tr>';
                     });
@@ -144,7 +139,9 @@
         }
 
         function formatDate(date) {
+            if (!date) return 'N/A';
             const d = new Date(date);
+            if (isNaN(d)) return date; // keep original if parse fails (string dates)
             return ('0' + d.getDate()).slice(-2) + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + d.getFullYear();
         }
 

@@ -43,13 +43,13 @@
     <div class="container">
         <div class="text-center mb-4">
             <img src="images/TUV Austria Logo.png" alt="TUV Logo" width="250">
-            <h1>Verify Inspection Certificate</h1>
+            <h1>Verify Calibration Certificate</h1>
             <p>Enter the Certificate Number and click the "Verify" button.</p>
         </div>
 
         <form id="s-form" method="get" class="mb-4">
             <div class="input-group">
-                <input type="text" name="search" id="search" class="form-control" placeholder="Ex: INSP-TUVAT-2025-0725-001" required>
+                <input type="text" name="search" id="search" class="form-control" placeholder="Ex: CAL-TUVAT-2025-0725-001" required>
                 <button class="btn btn-primary" type="submit">VERIFY</button>
             </div>
         </form>
@@ -77,16 +77,14 @@
 
                         <table class="table table-bordered mt-3">
                             <tr><td><strong>Certificate Number</strong></td><td>{{ $certificate->certificate_number }}</td></tr>
-                            <tr><td><strong>Inspector</strong></td><td>{{ $certificate->inspector }}</td></tr>
+                            <tr><td><strong>Calibration Engineer</strong></td><td>{{ $certificate->calibrator }}</td></tr>
                             <tr><td><strong>Client Name</strong></td><td>{{ $certificate->client_name }}</td></tr>
-                            <tr><td><strong>Inspection Type</strong></td><td>{{ $certificate->inspection_type }}</td></tr>
-                            <tr><td><strong>Inspection Location</strong></td><td>{{ $certificate->inspection_location }}</td></tr>
+                            <tr><td><strong>Location</strong></td><td>{{ $certificate->location }}</td></tr>
                             <tr><td><strong>Equipment Name</strong></td><td>{{ $certificate->equipment_name }}</td></tr>
                             <tr><td><strong>Equipment Brand</strong></td><td>{{ $certificate->equipment_brand ?? 'N/A' }}</td></tr>
-                            <tr><td><strong>Serial/Chassis No.</strong></td><td>{{ $certificate->equipment_serial_chassis ?? 'N/A' }}</td></tr>
-                            <tr><td><strong>Rated Capacity</strong></td><td>{{ $certificate->equipment_rated_capacity ?? 'N/A' }}</td></tr>
-                            <tr><td><strong>SWL</strong></td><td>{{ $certificate->equipment_swl ?? 'N/A' }}</td></tr>
-                            <tr><td><strong>Inspection Date</strong></td><td>{{ \Carbon\Carbon::parse($certificate->inspection_date)->format('d M Y') }}</td></tr>
+                            <tr><td><strong>Equipment ID</strong></td><td>{{ $certificate->equipment_id ?? 'N/A' }}</td></tr>
+                            <tr><td><strong>Calibration Date</strong></td><td>{{ \Carbon\Carbon::parse($certificate->calibration_date)->format('d M Y') }}</td></tr>
+                            <tr><td><strong>Report Issue Date</strong></td><td>{{ \Carbon\Carbon::parse($certificate->report_issue_date)->format('d M Y') }}</td></tr>
                             <tr>
                                 <td><strong>Validity Date</strong></td>
                                 <td>

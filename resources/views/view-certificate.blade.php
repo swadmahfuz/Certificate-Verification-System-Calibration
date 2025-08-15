@@ -4,42 +4,21 @@
     <meta charset="utf-8">
     <meta name="robots" content="noindex">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>TÜV Austria BIC CVS | View Certificate Information</title>
+    <title>TÜV Austria BIC CVS | View Calibration Certificate</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
     <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
     <style>
-        body {
-            font-size: 13px;
-        }
+        body { font-size: 13px; }
         .btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            white-space: nowrap;
+            display: flex; align-items: center; justify-content: center;
+            padding: 8px 12px; border-radius: 8px; font-size: 13px; font-weight: 600;
+            transition: all 0.3s ease; white-space: nowrap;
         }
-        .btn i {
-            font-size: 14px;
-        }
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .btn-container {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        .card-header {
-            background-color: #f4f4f4;
-            padding: 20px;
-        }
+        .btn i { font-size: 14px; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
+        .btn-container { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+        .card-header { background-color: #f4f4f4; padding: 20px; }
     </style>
 </head>
 <body background="../images/tuv-login-background1.jpg">
@@ -48,7 +27,7 @@
     <div class="container">
         <div class="card">
             <div class="card-header text-center">
-                <h3>TÜV Austria BIC CVS - Detailed Certificate Information</h3>
+                <h3>TÜV Austria BIC CVS - Detailed Calibration Certificate Information</h3>
                 <div class="btn-container mt-3">
                     <a href="../dashboard" class="btn btn-primary"><i class="fa-solid fa-arrow-left me-1"></i> Go back to Dashboard</a>
                     @if($certificate->status !== 'Deleted')
@@ -91,7 +70,8 @@
 
                 @if($certificate->certificate_pdf)
                     <div class="mt-2 text-muted small">
-                        Last Uploaded by: <strong>{{ $certificate->pdf_uploaded_by }}</strong> on {{ \Carbon\Carbon::parse($certificate->pdf_uploaded_at)->format('d M Y \a\t H:i') }}
+                        Last Uploaded by: <strong>{{ $certificate->pdf_uploaded_by }}</strong>
+                        on {{ \Carbon\Carbon::parse($certificate->pdf_uploaded_at)->format('d M Y \a\t H:i') }}
                     </div>
                 @endif
             </div>
@@ -102,7 +82,6 @@
                         <tr><th>Certificate Number</th><td>{{ $certificate->certificate_number }}</td></tr>
                         <tr>
                             <th>Certificate Validity</th>
-                            
                             <td>
                                 @if ($certificate->status === 'Deleted')
                                     <span class="text-danger">This certificate has been deleted ❌</span>
@@ -110,7 +89,7 @@
                                     <span class="text-warning">Certificate Pending Review ⚠️</span>
                                 @elseif ($certificate->status === 'Pending Approval')
                                     <span class="text-warning">Certificate Pending Approval ⚠️</span>
-                                @elseif (empty($certificate->expiry_date) || \Carbon\Carbon::now() <= \Carbon\Carbon::parse($certificate->expiry_date))
+                                @elseif (empty($certificate->validity_date) || \Carbon\Carbon::now() <= \Carbon\Carbon::parse($certificate->validity_date))
                                     <span class="text-success">Certificate Valid! ✅</span>
                                 @else
                                     <span class="text-danger">Certificate Expired! ⚠️</span>
@@ -120,27 +99,29 @@
                         <tr>
                             <th>Approval Status</th>
                             <td>
-                                @if($certificate->status == 'Pending')
-                                    {{ $certificate->status }} Review ⚠️
-                                @elseif($certificate->status == 'Reviewed')
-                                    {{ $certificate->status }}. Pending Approval ⚠️
-                                @elseif($certificate->status == 'Approved')
-                                    {{ $certificate->status }} ✅
+                                @if($certificate->status === 'Pending Review')
+                                    Pending Review ⚠️
+                                @elseif($certificate->status === 'Pending Approval')
+                                    Reviewed. Pending Approval ⚠️
+                                @elseif($certificate->status === 'Approved')
+                                    Approved ✅
                                 @else
                                     {{ $certificate->status }}
                                 @endif
                             </td>
                         </tr>
-                        <tr><th>Inspector / TUVAT Responsible</th><td>{{ $certificate->inspector }}</td></tr>
-                        <tr><th>Client</th><td>{{ $certificate->client_name}}</td></tr>
-                        <tr><th>Inspection Type</th><td>{{ $certificate->inspection_type }}</td></tr>
-                        <tr><th>Inspection Location</th><td>{{ $certificate->inspection_location }}</td></tr>
+
+                        <tr><th>Calibration Engineer / TUVAT Responsible</th><td>{{ $certificate->calibrator }}</td></tr>
+                        <tr><th>Client</th><td>{{ $certificate->client_name }}</td></tr>
+                        <tr><th>Location</th><td>{{ $certificate->location }}</td></tr>
+
                         <tr><th>Equipment/Item Name</th><td>{{ $certificate->equipment_name }}</td></tr>
                         <tr><th>Manufacturer / Brand</th><td>{{ $certificate->equipment_brand }}</td></tr>
-                        <tr><th>Equipment Serial / Chassis Number</th><td>{{ $certificate->equipment_serial_chassis }}</td></tr>
-                        <tr><th>Rated Capacity</th><td>{{ $certificate->equipment_rated_capacity }}</td></tr>
-                        <tr><th>Equipment SWL</th><td>{{ $certificate->equipment_swl }}</td></tr>
-                        <tr><th>Inspection Date</th><td>{{ \Carbon\Carbon::parse($certificate->inspection_date)->format('d M Y') }}</td></tr>
+                        <tr><th>Equipment ID</th><td>{{ $certificate->equipment_id }}</td></tr>
+
+                        <tr><th>Calibration Date</th><td>{{ \Carbon\Carbon::parse($certificate->calibration_date)->format('d M Y') }}</td></tr>
+                        <tr><th>Report Issue Date</th><td>{{ \Carbon\Carbon::parse($certificate->report_issue_date)->format('d M Y') }}</td></tr>
+
                         <tr><th>Valid Till</th>
                             <td>
                                 @if (!empty($certificate->validity_date))
@@ -150,20 +131,24 @@
                                 @endif
                             </td>
                         </tr>
-                        <tr><th>Inspection Remarks</th><td>{{ $certificate->inspection_remarks }}</td></tr>
-                        <tr><th>Internal Notes</th><td>{{ $certificate->inspection_internal_notes }}</td></tr>
-                        <tr><th>Certificate PDF File</th>
+
+                        <tr><th>Calibration Remarks</th><td>{{ $certificate->calibration_remarks }}</td></tr>
+                        <tr><th>Internal Notes</th><td>{{ $certificate->calibration_internal_notes }}</td></tr>
+
+                        <tr>
+                            <th>Certificate PDF File</th>
                             <td>
                                 @if($certificate->certificate_pdf)
-                                <a href="{{ route('certificate.downloadPdf', $certificate->id) }}" target="_blank">
-                                    <strong>{{ $certificate->certificate_pdf }}</strong><br>
-                                </a>
+                                    <a href="{{ route('certificate.downloadPdf', $certificate->id) }}" target="_blank">
+                                        <strong>{{ $certificate->certificate_pdf }}</strong><br>
+                                    </a>
                                 @else
                                     <span class="text-danger">No certificate PDF uploaded yet ❌</span>
                                 @endif
                             </td>
                         </tr>
-                        <tr><th>PDF Uploaded by</th>
+                        <tr>
+                            <th>PDF Uploaded by</th>
                             <td>
                                 @if($certificate->certificate_pdf)
                                     {{ $certificate->pdf_uploaded_by }}
@@ -172,7 +157,8 @@
                                 @endif
                             </td>
                         </tr>
-                        <tr><th>Certificate Uploaded at</th>
+                        <tr>
+                            <th>Certificate Uploaded at</th>
                             <td>
                                 @if($certificate->certificate_pdf)
                                     {{ \Carbon\Carbon::parse($certificate->pdf_uploaded_at)->format('d M Y \a\t H:i:s') }}
@@ -181,6 +167,7 @@
                                 @endif
                             </td>
                         </tr>
+
                         <tr><th>Review By</th><td>{{ $certificate->review_by }}</td></tr>
                         <tr>
                             <th>Reviewed on</th>
@@ -202,7 +189,8 @@
                                     Not yet approved
                                 @endif
                             </td>
-                        <tr>
+                        </tr>
+
                         <tr>
                             <th>QR Code</th>
                             <td>
@@ -213,11 +201,14 @@
                                 <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ $verification_url }}" />
                             </td>
                         </tr>
+
                         <tr><th>Created By</th><td>{{ $certificate->created_by }}</td></tr>
                         <tr><th>Created On</th><td>{{ $certificate->created_at->format('d M Y \a\t H:i:s') }}</td></tr>
                         <tr><th>Last Updated By</th><td>{{ $certificate->updated_by }}</td></tr>
                         <tr><th>Updated On</th><td>{{ $certificate->updated_at ? $certificate->updated_at->format('d M Y \a\t H:i:s') : '' }}</td></tr>
-                        <tr><th>Deleted by</th>
+
+                        <tr>
+                            <th>Deleted by</th>
                             <td>
                                 @if ($certificate->status === 'Deleted')
                                     {{ $certificate->deleted_by }}

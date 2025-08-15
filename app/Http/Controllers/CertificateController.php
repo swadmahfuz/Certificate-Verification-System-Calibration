@@ -13,12 +13,12 @@ use DB;
 
 /*
 |--------------------------------------------------------------------------
-| Certificate Verification System (CVS) - Inspection 
+| Certificate Verification System (CVS) - Calibration 
 | TUV Austria Bureau of Inspection & Certification 
 | Developed by: Swad Ahmed Mahfuz (Head of Division - Business Assurance & Training, Bangladesh)
 | Contact: swad.mahfuz@gmail.com, +1-725-867-7718, +88 01733 023 008
 | Project Start: 12 October 2022
-| Latest Stable Release: v3.2.1 -  14 August 2025
+| Latest Stable Release: v3.2.1 -  15 August 2025
 |--------------------------------------------------------------------------
 */
 
@@ -140,15 +140,17 @@ class CertificateController extends Controller
     {
         if (Auth::check()) {
             $request->validate([
-                'certificate_number' => 'required|unique:inspection_certificates',
-                'inspector' => 'required',
-                'client_name' => 'required',
-                'inspection_type' => 'required',
-                'inspection_location' => 'required',
-                'equipment_name' => 'required',
-                'inspection_date' => 'required',
-                'review_by' => 'required',
-                'approval_by' => 'required',
+                'certificate_number'   => 'required|unique:calibration_certificates',
+                'calibrator'           => 'required',
+                'client_name'          => 'required',
+                'location'             => 'required',
+                'equipment_name'       => 'required',
+                'equipment_brand'      => 'required',
+                'equipment_id'         => 'required',
+                'calibration_date'     => 'required',
+                'report_issue_date'     => 'required',
+                'review_by'            => 'required',
+                'approval_by'          => 'required',
             ]);
 
             $review_by_user = User::where('name', $request->review_by)->first();
@@ -167,19 +169,18 @@ class CertificateController extends Controller
 
             $certificate = new Certificate();
             $certificate->certificate_number = $request->certificate_number;
-            $certificate->inspector = $request->inspector;
+            $certificate->calibrator = $request->calibrator;
             $certificate->client_name = $request->client_name;
-            $certificate->inspection_type = $request->inspection_type;
-            $certificate->inspection_location = $request->inspection_location;
+            $certificate->location = $request->location;
             $certificate->equipment_name = $request->equipment_name;
             $certificate->equipment_brand = $request->equipment_brand;
-            $certificate->equipment_serial_chassis = $request->equipment_serial_chassis;
-            $certificate->equipment_rated_capacity = $request->equipment_rated_capacity;
-            $certificate->equipment_swl = $request->equipment_swl;
-            $certificate->inspection_date = $request->inspection_date;
+            $certificate->equipment_id = $request->equipment_id;
+            $certificate->calibration_date = $request->calibration_date;
+            $certificate->report_issue_date = $request->report_issue_date;
             $certificate->validity_date = $request->validity_date;
-            $certificate->inspection_remarks = $request->inspection_remarks;
-            $certificate->inspection_internal_notes = $request->inspection_internal_notes;
+            $certificate->calibration_remarks = $request->calibration_remarks;
+            $certificate->calibration_internal_notes = $request->calibration_internal_notes;
+            
             $certificate->status = 'Pending Review';
             $certificate->created_by = Auth::user()->name;
             $certificate->created_by_id = Auth::user()->id;
@@ -224,14 +225,16 @@ class CertificateController extends Controller
         if (Auth::check()) {
             $request->validate([
                 'certificate_number' => 'required',
-                'inspector' => 'required',
-                'client_name' => 'required',
-                'inspection_type' => 'required',
-                'inspection_location' => 'required',
-                'equipment_name' => 'required',
-                'inspection_date' => 'required',
-                'review_by' => 'required',
-                'approval_by' => 'required',
+                'calibrator'         => 'required',
+                'client_name'        => 'required',
+                'location'           => 'required',
+                'equipment_name'     => 'required',
+                'equipment_brand'    => 'required',
+                'equipment_id'       => 'required',
+                'calibration_date'   => 'required',
+                'report_issue_date'  => 'required',
+                'review_by'          => 'required',
+                'approval_by'        => 'required',
             ]);
 
             $review_by_user = User::where('name', $request->review_by)->first();
@@ -249,20 +252,20 @@ class CertificateController extends Controller
             }
 
             $certificate = Certificate::find($request->id);
-            $certificate->certificate_number = $request->certificate_number;
-            $certificate->inspector = $request->inspector;
-            $certificate->client_name = $request->client_name;
-            $certificate->inspection_type = $request->inspection_type;
-            $certificate->inspection_location = $request->inspection_location;
-            $certificate->equipment_name = $request->equipment_name;
-            $certificate->equipment_brand = $request->equipment_brand;
-            $certificate->equipment_serial_chassis = $request->equipment_serial_chassis;
-            $certificate->equipment_rated_capacity = $request->equipment_rated_capacity;
-            $certificate->equipment_swl = $request->equipment_swl;
-            $certificate->inspection_date = $request->inspection_date;
-            $certificate->validity_date = $request->validity_date;
-            $certificate->inspection_remarks = $request->inspection_remarks;
-            $certificate->inspection_internal_notes = $request->inspection_internal_notes;
+            
+            $certificate->certificate_number        = $request->certificate_number;
+            $certificate->calibrator                = $request->calibrator;
+            $certificate->client_name               = $request->client_name;
+            $certificate->location                  = $request->location;
+            $certificate->equipment_name            = $request->equipment_name;
+            $certificate->equipment_brand           = $request->equipment_brand;
+            $certificate->equipment_id              = $request->equipment_id;
+            $certificate->calibration_date          = $request->calibration_date;
+            $certificate->report_issue_date         = $request->report_issue_date;
+            $certificate->validity_date             = $request->validity_date;
+            $certificate->calibration_remarks       = $request->calibration_remarks;
+            $certificate->calibration_internal_notes= $request->calibration_internal_notes;
+
             $certificate->status = 'Pending Review';
             $certificate->review_by = $request->review_by;
             $certificate->review_by_id = $review_by_user_id;
@@ -445,7 +448,7 @@ class CertificateController extends Controller
 
         $pdfFile = $request->file('certificate_pdf');
         $timestamp = Carbon::now()->format('YmdHi');
-        $fileName = 'TUVAT Insp Cert - ' . $certificate->client_name . ' ' . $timestamp . '.' . $pdfFile->getClientOriginalExtension();
+        $fileName = 'TUVAT Calib Cert - ' . $certificate->client_name . ' ' . $timestamp . '.' . $pdfFile->getClientOriginalExtension();
 
         $pdfFile->move($destinationPath, $fileName);
 

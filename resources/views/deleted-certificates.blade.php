@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="robots" content="noindex">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>TÜV Austria BIC CVS | Deleted Inspection Certificates</title>
+    <title>TÜV Austria BIC CVS | Deleted Calibration Certificates</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
     <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
@@ -46,7 +46,7 @@
                 <div class="card">
                     <div class="card-header">
                         <h6 class="text-end">Logged in User: <b>{{ auth()->user()->name }} ({{ auth()->user()->designation }})</b></h6>
-                        <h3 class="text-center mb-3">TÜV Austria BIC - Inspection Certificate Verification System (CVS)</h3>
+                        <h3 class="text-center mb-3">TÜV Austria BIC - Calibration Certificate Verification System (CVS)</h3>
                         <table class="mx-auto mb-3" style="width: 80%;">
                             <tr>
                                 <td><a href="add-certificate" class="btn btn-success"><i class="fa-solid fa-plus me-1"></i> Add New Certificate</a></td>
@@ -63,15 +63,15 @@
                     <div class="card-body">
                         <table class="table table-striped search-result">
                             <thead>
-                                <tr><th colspan="12" class="text-center fs-5 fw-bold">Deleted Inspection Certificates</th></tr>
+                                <tr><th colspan="12" class="text-center fs-5 fw-bold">Deleted Calibration Certificates</th></tr>
                                 <tr>
                                     <th>Sl.</th>
-                                    <th>Certificate ID</th>
-                                    <th>Inspector</th>
+                                    <th>Certificate No</th>
+                                    <th>Calibration Engg</th>
                                     <th>Client</th>
-                                    <th>Inspection Type</th>
                                     <th>Equipment</th>
-                                    <th>Inspection Date</th>
+                                    <th>Calibration Date</th>
+                                    <th>Report Issue Date</th>
                                     <th>Validity</th>
                                     <th>Status</th>
                                     <th>QR Code</th>
@@ -105,14 +105,14 @@
                         const url = "{{ url('') }}" + "?search=" + data.certificate_number;
                         html += '<tr>' +
                             '<td>' + (index + 1 + (res.data.current_page - 1) * res.data.per_page) + '.</td>' +
-                            '<td>' + data.certificate_number + '</td>' +
-                            '<td>' + data.inspector + '</td>' +
-                            '<td>' + data.client_name + '</td>' +
-                            '<td>' + data.inspection_type + '</td>' +
-                            '<td>' + data.equipment_name + '</td>' +
-                            '<td>' + formatDate(data.inspection_date) + '</td>' +
+                            '<td>' + (data.certificate_number ?? '') + '</td>' +
+                            '<td>' + (data.calibrator ?? '') + '</td>' +
+                            '<td>' + (data.client_name ?? '') + '</td>' +
+                            '<td>' + (data.equipment_name ?? '') + '</td>' +
+                            '<td>' + formatDate(data.calibration_date) + '</td>' +
+                            '<td>' + formatDate(data.report_issue_date) + '</td>' +
                             '<td>' + (data.validity_date ? formatDate(data.validity_date) : 'N/A') + '</td>' +
-                            '<td>' + data.status + '</td>' +
+                            '<td>' + (data.status ?? '') + '</td>' +
                             '<td><img src="' + generateQRCode(url) + '"/></td>' +
                             '<td><a href="view-certificate/' + data.id + '" target="_blank"><i class="fa-solid fa-circle-info" title="View"></i></a></td>' +
                             '</tr>';
@@ -130,6 +130,7 @@
         function formatDate(date) {
             if (!date) return 'N/A';
             const d = new Date(date);
+            if (isNaN(d)) return date; // keep original if parse fails
             return ('0' + d.getDate()).slice(-2) + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + d.getFullYear();
         }
 
@@ -153,15 +154,12 @@
         }
 
         $(".search-input").on('keyup', function() {
-            const userInput = $(this).val();
-            fetchCertificates(1, userInput);
+            fetchCertificates(1, $(this).val());
         });
 
         $(document).on('click', '.pagination a', function(e) {
             e.preventDefault();
-            const page = $(this).attr('data-page');
-            const userInput = $('.search-input').val();
-            fetchCertificates(page, userInput);
+            fetchCertificates($(this).attr('data-page'), $('.search-input').val());
         });
 
         fetchCertificates();

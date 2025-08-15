@@ -54,7 +54,7 @@
     <div class="card bg-light mt-3">
         <div class="card-header" style="padding-top: 20px; padding-bottom: 20px;">
             <center>
-                <h3 style="padding-bottom: 5px">TÜV Austria BIC CVS | Import/Export Inspection Certificate Data</h3>
+                <h3 style="padding-bottom: 5px">TÜV Austria BIC CVS | Import/Export Calibration Certificate Data</h3>
                 <table style="width:64%; margin: auto;">
                     <tr>
                         <td>
@@ -68,12 +68,12 @@
                             </a>
                         </td>
                         <td>
-                            <a href="./downloads/TUVAT CVS Inspection - Data Import Template.xlsx" class="btn btn-info d-flex align-items-center">
+                            <a href="./downloads/TUVAT CVS Calibration - Data Import Template.xlsx" class="btn btn-info d-flex align-items-center">
                                 <i class="fa-solid fa-download me-1"></i> Download Blank CSV File
                             </a>
                         </td>
                         <td>
-                            <a href="./downloads/TUVAT CVS Inspection - Sample Data File.xlsx" class="btn btn-secondary d-flex align-items-center">
+                            <a href="./downloads/TUVAT CVS Calibration - Sample Data File.xlsx" class="btn btn-secondary d-flex align-items-center">
                                 <i class="fa-solid fa-file-lines me-1"></i> Download Sample Data
                             </a>
                         </td>
@@ -94,7 +94,7 @@
                 <h6 class="text-end" style="font-style: italic; font-weight: bold; color: red;">Do not change template formatting.</h6>
                 <h6 class="text-end" style="font-style: italic; font-weight: bold; color: red;">All dates in Excel must be in YYYY-MM-DD format.</h6>
                 <h6 class="text-end" style="font-style: italic; font-weight: bold; color: red;">Example: "20 May 2024" → "2024-05-20"</h6>
-                <center><button class="btn btn-success mt-3">Import Data</button></center>
+                <center><button class="btn btn.success mt-3">Import Data</button></center>
                 <br>
             </form>
         </div>

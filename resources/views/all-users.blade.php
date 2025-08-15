@@ -54,7 +54,7 @@
         <div class="card">
             <div class="card-header">
                 <h6 class="text-end">Logged in User: <b>{{ auth()->user()->name }} ({{ auth()->user()->designation }})</b></h6>
-                <h3 class="mb-3">TÜV Austria BIC - Training Certificate Verification System (CVS)</h3>
+                <h3 class="mb-3">TÜV Austria BIC - Calibration Certificate Verification System (CVS)</h3>
                 <table class="mx-auto mb-3" style="width: 85%;">
                     <tr>
                         <td><a href="dashboard" class="btn btn-primary"><i class="fa-solid fa-arrow-left me-1"></i> Dashboard</a></td>
