@@ -95,6 +95,7 @@
                                     @endif
                                 </td>
                             </tr>
+                            <tr><td><strong>Calibration Remarks</strong></td><td>{{ $certificate->calibration_remarks ?? 'N/A' }}</td></tr>
                         </table>
 
                         @if ($certificate->certificate_pdf)
